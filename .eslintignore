@@ -1,0 +1,12 @@
+!**/.eslintrc*
+**/node_modules/*
+node_modules/
+*.svg
+*.ico
+*.json
+.gitignore
+*.md
+*.log
+*.lock
+*.sql
+build/

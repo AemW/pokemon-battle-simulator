@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "types": ["@types/node"],
+    "noEmit": true,
+  },
+  "include": [
+    ".eslintrc.js",
+    "prettier.config.js"
+  ]
+}
