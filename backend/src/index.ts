@@ -8,6 +8,7 @@ const main = async () => {
     host: process.env.HOST || '0.0.0.0',
   })
 
+  // Add logging to some events
   await server.register({
     plugin: hp,
     options: {

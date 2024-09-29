@@ -1,3 +1,4 @@
+import { badImplementation, badRequest } from '@hapi/boom'
 import * as Hapi from '@hapi/hapi'
 import Joi = require('joi')
 import * as data from './pkmData.json'
@@ -10,18 +11,35 @@ const pkmPlugin = {
         method: 'GET',
         path: '/pkm/list',
         // Return all available pkm
-        handler: () => data,
+        handler: (request: Hapi.Request) => {
+          try {
+            return data
+          } catch (error) {
+            request.log('error', error as Error)
+            throw badImplementation('Failed to get pokemon')
+          }
+        },
       },
       {
         method: 'GET',
         path: '/pkm/{id}',
         // Return a specific pkm, by id
-        handler: (request: Hapi.Request) => data.pokemon.find((pkm) => pkm.id === request.params.id),
+        handler: (request: Hapi.Request) => {
+          try {
+            return data.pokemon.find((pkm) => pkm.id === request.params.id)
+          } catch (error) {
+            request.log('error', error as Error)
+            throw badImplementation('Failed to get pokemon')
+          }
+        },
         options: {
           validate: {
             params: Joi.object({
               id: Joi.number().min(1).max(151),
             }),
+            failAction: (_request, _h, err) => {
+              throw badRequest(err?.message ?? 'Validation failure')
+            },
           },
         },
       },
@@ -30,11 +48,16 @@ const pkmPlugin = {
         path: '/pkm/simulate',
         // Simulate a battle between two teams, returning the logs of the battle
         handler: (request: Hapi.Request<{ Payload: { team1: Team; team2: Team } }>) => {
-          const {
-            payload: { team1, team2 },
-          } = request
+          try {
+            const {
+              payload: { team1, team2 },
+            } = request
 
-          return generateBattleLogs(simulateBattle(team1, team2))
+            return generateBattleLogs(simulateBattle(team1, team2))
+          } catch (error) {
+            request.log('error', error as Error)
+            throw badImplementation('Simulation failure')
+          }
         },
         options: {
           validate: {
@@ -42,6 +65,9 @@ const pkmPlugin = {
               team1: TeamSchema,
               team2: TeamSchema,
             }),
+            failAction: (_request, _h, err) => {
+              throw badRequest(err?.message ?? 'Validation failure')
+            },
           },
         },
       },
@@ -140,6 +166,8 @@ const simulateAction = (pkm1: Pkm, pkm2: Pkm): BattleEvent[] => {
     { event: EVENT.Attack, pkm: pkm1 },
     { event: EVENT.Damage, pkm: pkm2 },
   ]
+  throw new Error('potato goes here')
+
   // 50/50 chance of fainting the hurt pkm
   if (decider >= 50) {
     events.push({ event: EVENT.Faint, pkm: pkm2 })
