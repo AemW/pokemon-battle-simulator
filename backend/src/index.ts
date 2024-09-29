@@ -1,5 +1,8 @@
-import * as Hapi from '@hapi/hapi'
-import * as hp from 'hapi-pino'
+import Hapi from '@hapi/hapi'
+import Inert from '@hapi/inert'
+import Vision from '@hapi/vision'
+import hp from 'hapi-pino'
+import hapiswagger from 'hapi-swagger'
 import pkmPlugin from './plugins/pkm'
 
 const main = async () => {
@@ -8,16 +11,32 @@ const main = async () => {
     host: process.env.HOST || '0.0.0.0',
   })
 
-  // Add logging to some events
-  await server.register({
-    plugin: hp,
-    options: {
-      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-      redact: ['req.headers.authorization'],
+  // Register plugins
+  await server.register([
+    // Logging
+    {
+      plugin: hp,
+      options: {
+        // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+        redact: ['req.headers.authorization'],
+      },
     },
-  })
 
-  await server.register([pkmPlugin])
+    // Documentation
+    Inert,
+    Vision,
+    {
+      plugin: hapiswagger,
+      options: {
+        info: {
+          title: 'API Documentation',
+        },
+      },
+    },
+
+    // Own plugins
+    { plugin: pkmPlugin },
+  ])
   await server.initialize()
   await server.start()
 }
