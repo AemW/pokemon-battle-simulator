@@ -1,16 +1,24 @@
 import * as Hapi from '@hapi/hapi'
+import * as hp from 'hapi-pino'
 import pkmPlugin from './plugins/pkm'
 
 const main = async () => {
-  const app: Hapi.Server = Hapi.server({
+  const server: Hapi.Server = Hapi.server({
     port: process.env.PORT || 3000,
     host: process.env.HOST || '0.0.0.0',
   })
 
-  await app.register([pkmPlugin])
-  await app.initialize()
-  await app.start()
-  console.log(`App started. Serving on ${app.info.uri}`)
+  await server.register({
+    plugin: hp,
+    options: {
+      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+      redact: ['req.headers.authorization'],
+    },
+  })
+
+  await server.register([pkmPlugin])
+  await server.initialize()
+  await server.start()
 }
 
 process.on('unhandledRejection', (err) => {
