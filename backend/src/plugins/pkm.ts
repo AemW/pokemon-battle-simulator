@@ -166,7 +166,6 @@ const simulateAction = (pkm1: Pkm, pkm2: Pkm): BattleEvent[] => {
     { event: EVENT.Attack, pkm: pkm1 },
     { event: EVENT.Damage, pkm: pkm2 },
   ]
-  throw new Error('potato goes here')
 
   // 50/50 chance of fainting the hurt pkm
   if (decider >= 50) {
