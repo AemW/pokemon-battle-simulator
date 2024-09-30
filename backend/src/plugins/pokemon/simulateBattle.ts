@@ -108,7 +108,6 @@ const calculateEvadeChance = (pokemon: Pkm) => {
   let evadeChance = 1 / evadeFactor
 
   evadeChance = Math.min(evadeChance * maxEvadeChance, maxEvadeChance)
-  console.log(pokemon.name, evadeChance * maxEvadeChance, evadeChance)
 
   return evadeChance
 }

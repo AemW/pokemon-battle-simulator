@@ -5,10 +5,6 @@ import data from './pkmData.json'
 import { generateBattleLogs, simulateBattle } from './simulateBattle'
 import { PkmInfo, typings } from './types'
 
-const w = data.pokemon.reduce((acc, pkm) => acc + parseFloat(pkm.weight), 0) / 151
-const h = data.pokemon.reduce((acc, pkm) => acc + parseFloat(pkm.height), 0) / 151
-console.log({ w, h })
-
 const pkmPlugin: Hapi.Plugin<undefined> = {
   name: 'pkmPlugin',
   register: async (server: Hapi.Server) => {
