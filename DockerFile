@@ -1,0 +1,14 @@
+FROM node:22 as backend
+WORKDIR /backend
+COPY ./backend .
+RUN npm install && npm run build
+
+FROM node:22-alpine
+COPY --from=backend /backend/build /backend/build
+COPY --from=backend /backend/node_modules /backend/node_modules
+COPY --from=backend /backend/package.json /backend/package.json
+
+ENV NODE_ENV=production
+WORKDIR /backend
+EXPOSE 3000
+CMD ["node", "/backend/build/index.js"]
