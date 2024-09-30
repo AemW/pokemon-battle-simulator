@@ -8,7 +8,7 @@
   },
   "author": "Andreas Wahlström",
   "license": "ISC",
-  "description": "",
+  "description": "A simple server with an API for simulating Pokémon battles",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
@@ -23,6 +23,6 @@
     "prettier": "^3.3.3"
   },
   "engines": {
-    "node": "v22.9.0"
+    "node": ">= v22"
   }
 }

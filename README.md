@@ -22,7 +22,7 @@ This will install all required dependencies.
 npm run start
 ```
 
-By default, the server will run on `0.0.0.0:3000`. You can configure the server using environment variables if needed.
+By default, the server will run on `localhost:3000`. You can configure the server using environment variables if needed.
 
 ## Using the API
 
@@ -60,13 +60,13 @@ The server configuration can be adjusted using the following environment variabl
 
 ## Swagger Documentation
 
-The API is documented using Swagger. Once the server is running, you can access the documentation at `HOST:PORT/documentation` (default: `0.0.0.0:3000/documentation`).
+The API is documented using Swagger. Once the server is running, you can access the documentation at `HOST:PORT/documentation` (default: `localhost:3000/documentation`).
 
 This allows you to test the server’s APIs interactively.
 
 ## Limitations, decisions, and further improvements
 
-Due to time and hardware constraints, I was unable to test the Docker setup. The included Dockerfile is untested, and I could not add a Docker Compose file with Redis as a database, which I had planned to include.
+Due to time and hardware constraints, I was unable to test the Docker setup. The included Dockerfile is untested, and I could not add a Docker Compose file with Redis/MongoDB as a database, which I had planned to include.
 
 I decided to test Hapi for this project, instead of Express, since it comes with quite a few nice-to-haves. Since this was the first time I used it there might be a few framework conventions I've missed.
 
@@ -74,4 +74,4 @@ I would also have liked to make a simple react-based frontend, where a user coul
 
 The tests could also be expanded upon, since they are somewhat limited right now.
 
-The battle logic is another area where you could keep on improving ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more.
+The battle logic is another area where you could keep on improving endlessly, almost ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more.

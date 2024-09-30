@@ -5,7 +5,7 @@ import data from './pkmData.json'
 import { generateBattleLogs, simulateBattle } from './simulateBattle'
 import { PokemonInfo, typings } from './types'
 
-// Plugin, routes, and validators
+// This file contains the plugin, routes, and validators
 const pokemonPlugin: Hapi.Plugin<undefined> = {
   name: 'pokemonPlugin',
   register: async (server: Hapi.Server) => {
@@ -14,14 +14,7 @@ const pokemonPlugin: Hapi.Plugin<undefined> = {
         method: 'GET',
         path: '/pokemon/list',
         // Return all available pokemon
-        handler: (request: Hapi.Request): PokemonInfo[] => {
-          try {
-            return data.pokemon
-          } catch (error) {
-            request.log('error', error as Error)
-            throw badImplementation('Failed to get pokemon')
-          }
-        },
+        handler: getAllRouteHandler,
         options: {
           description: 'GET /pokemon',
           notes: 'Get all pokemon',
@@ -33,18 +26,7 @@ const pokemonPlugin: Hapi.Plugin<undefined> = {
         method: 'GET',
         path: '/pokemon/{id}',
         // Return a specific pokemon, by id
-        handler: (request: Hapi.Request): PokemonInfo => {
-          try {
-            const pokemon = data.pokemon.find((pkm) => pkm.id === request.params.id)
-            if (!pokemon) {
-              throw notFound('Could not find requested pokemon')
-            }
-            return pokemon
-          } catch (error) {
-            request.log('error', error as Error)
-            throw badImplementation('Failed to get pokemon')
-          }
-        },
+        handler: getByIdRouteHandler,
         options: {
           description: 'GET /pokemon/{id}',
           notes: 'Get a single pokemon by its id',
@@ -69,27 +51,8 @@ const pokemonPlugin: Hapi.Plugin<undefined> = {
       {
         method: 'POST',
         path: '/pokemon/simulate',
-        handler: (
-          request: Hapi.Request<{
-            Payload: { team1: { name: string; pokemon: number[] }; team2: { name: string; pokemon: number[] } }
-          }>,
-        ): string => {
-          try {
-            const {
-              payload: { team1, team2 },
-            } = request
-
-            // Fill pokemon data from id lists
-            const t1 = { name: team1.name, pokemon: team1.pokemon.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
-            const t2 = { name: team2.name, pokemon: team2.pokemon.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
-
-            const logs = generateBattleLogs(simulateBattle(t1, t2))
-            return logs.join('\n')
-          } catch (error) {
-            request.log('error', error as Error)
-            throw badImplementation('Simulation failure')
-          }
-        },
+        // Simulate a battle between two teams of pokémon
+        handler: simulationRouteHandler,
         options: {
           description: 'POST /pokemon/simulate',
           notes: 'Simulate a battle between two teams, returning the logs of the battle',
@@ -112,8 +75,56 @@ const pokemonPlugin: Hapi.Plugin<undefined> = {
 
 export default pokemonPlugin
 
-// Validation schemas for the API
+// Router handlers
+// Retrive all pokemon
+const getAllRouteHandler = (request: Hapi.Request): PokemonInfo[] => {
+  try {
+    return data.pokemon
+  } catch (error) {
+    request.log('error', error as Error)
+    throw badImplementation('Failed to get pokemon')
+  }
+}
 
+// Get pokemon by id
+const getByIdRouteHandler = (request: Hapi.Request): PokemonInfo => {
+  try {
+    const pokemon = data.pokemon.find((pkm) => pkm.id === request.params.id)
+    if (!pokemon) {
+      throw notFound('Could not find requested pokemon')
+    }
+    return pokemon
+  } catch (error) {
+    request.log('error', error as Error)
+    throw badImplementation('Failed to get pokemon')
+  }
+}
+
+// Simulate battle between two teams of pokemon
+const simulationRouteHandler = (
+  request: Hapi.Request<{
+    Payload: { team1: { name: string; pokemon: number[] }; team2: { name: string; pokemon: number[] } }
+  }>,
+): string => {
+  try {
+    const {
+      payload: { team1, team2 },
+    } = request
+
+    // Fill pokemon data from id lists, set default hp (health/hit points)
+    const t1 = { name: team1.name, pokemon: team1.pokemon.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
+    const t2 = { name: team2.name, pokemon: team2.pokemon.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
+
+    const logs = generateBattleLogs(simulateBattle(t1, t2))
+    // Joining by \n gives a nicer printout
+    return logs.join('\n')
+  } catch (error) {
+    request.log('error', error as Error)
+    throw badImplementation('Simulation failure')
+  }
+}
+
+// Validation schemas for the API
 const idSchema = Joi.number().required().min(1).max(data.pokemon.length)
 
 const teamSchema = Joi.object({

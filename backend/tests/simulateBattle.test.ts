@@ -1,4 +1,3 @@
-// simulateBattle.test.ts
 import { generateBattleLogs, simulateBattle } from '../src/plugins/pokemon/simulateBattle'
 import { BattleEvent, EVENT, Team } from '../src/plugins/pokemon/types'
 

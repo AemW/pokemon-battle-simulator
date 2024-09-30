@@ -11,4 +11,4 @@ COPY --from=backend /backend/package.json /backend/package.json
 ENV NODE_ENV=production
 WORKDIR /backend
 EXPOSE 3000
-CMD ["node", "/backend/build/index.js"]
+CMD ["node", "/backend/build/src/index.js"]

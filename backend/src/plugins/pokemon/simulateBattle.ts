@@ -3,24 +3,26 @@ import { BattleEvent, EVENT, Pokemon, Team, Typings } from './types'
 
 // Simulate a pokemon battle between two teams
 export const simulateBattle = (team1: Team, team2: Team): BattleEvent[] => {
-  // Recursive function which alternates which pokemon will take its turn
+  // Recursive function which alternates which pokemon/team will take its turn
   // Keeps going until a team wins, returning all battle events
+  // Indices are used to keep track of which pokemon is in play for each team
   const simulateBattleRecursive = (index1: number, index2: number, t1: Team, t2: Team, events: BattleEvent[]) => {
-    const pokemon1 = t1.pokemon[index1]
     // Cloning since we will change these and don't want to work with side effects
     const pokemon2 = { ...t2.pokemon[index2] }
     const clonedT2 = { ...t2, pokemon: [...t2.pokemon] }
 
-    const result = simulateAction(pokemon1, pokemon2)
+    const result = simulateAction(t1.pokemon[index1], pokemon2)
+    events.push(...result)
 
     const damage = result.find((event) => event.event === EVENT.Damage)?.value ?? 0
-    const hasFainted = result.some((event) => event.event === EVENT.Faint)
 
     pokemon2.hp -= damage
     clonedT2.pokemon.splice(index2, 1, pokemon2)
-
-    events.push(...result)
+    const hasFainted = pokemon2.hp <= 0
     const newIndex2 = hasFainted ? index2 + 1 : index2
+    if (hasFainted) {
+      events.push({ event: EVENT.Faint, pokemon: pokemon2 })
+    }
 
     // t2 doesn't have any more pokemon, thus t1 has won
     if (!clonedT2.pokemon[newIndex2]) {
@@ -52,19 +54,17 @@ export const simulateBattle = (team1: Team, team2: Team): BattleEvent[] => {
 const simulateAction = (pokemon1: Pokemon, pokemon2: Pokemon): BattleEvent[] => {
   // pokemon1 attacks pokemon2
   const events: BattleEvent[] = [{ event: EVENT.Attack, pokemon: pokemon1 }]
-  const damage = calculateDamage(pokemon1, pokemon2)
+  // pokemon2 attempts to evade
   const evadeChance = calculateEvadeChance(pokemon2)
   const hit = Math.random() > evadeChance
 
   if (hit) {
+    const damage = calculateDamage(pokemon1, pokemon2)
     events.push({ event: EVENT.Damage, pokemon: pokemon2, value: damage })
   } else {
     events.push({ event: EVENT.Miss })
   }
 
-  if (hit && pokemon2.hp - damage <= 0) {
-    events.push({ event: EVENT.Faint, pokemon: pokemon2 })
-  }
   return events
 }
 
@@ -86,7 +86,7 @@ const calculateDamage = (attacker: Pokemon, defender: Pokemon) => {
   })
 
   // Calculate the damage
-  // This can result in some silly damage when attacker is much bigger than defender
+  // This can result in silly numbers when attacker is much larger than defender
   const damage =
     baseDamage *
     Math.sqrt(attackerWeight / defenderWeight) *
@@ -98,8 +98,8 @@ const calculateDamage = (attacker: Pokemon, defender: Pokemon) => {
 
 // Evade calculation function
 const calculateEvadeChance = (pokemon: Pokemon) => {
-  const avgHeight = 1.0 // in meters
-  const avgWeight = 45.0 // in kilograms
+  const avgHeight = 1.0 // avg height of all pokémon in meters
+  const avgWeight = 45.0 // avg weight of all pokémon in kilograms
   const maxEvadeChance = 0.15 // 15% max evade chance
   const height = parseFloat(pokemon.height)
   const weight = parseFloat(pokemon.weight)
@@ -108,7 +108,6 @@ const calculateEvadeChance = (pokemon: Pokemon) => {
   const evadeFactor = (height / avgHeight) * (weight / avgWeight)
 
   let evadeChance = 1 / evadeFactor
-
   evadeChance = Math.min(evadeChance * maxEvadeChance, maxEvadeChance)
 
   return evadeChance
