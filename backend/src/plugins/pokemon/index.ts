@@ -3,17 +3,18 @@ import Hapi from '@hapi/hapi'
 import Joi from 'joi'
 import data from './pkmData.json'
 import { generateBattleLogs, simulateBattle } from './simulateBattle'
-import { PkmInfo, typings } from './types'
+import { PokemonInfo, typings } from './types'
 
-const pkmPlugin: Hapi.Plugin<undefined> = {
-  name: 'pkmPlugin',
+// Plugin, routes, and validators
+const pokemonPlugin: Hapi.Plugin<undefined> = {
+  name: 'pokemonPlugin',
   register: async (server: Hapi.Server) => {
     server.route([
       {
         method: 'GET',
-        path: '/pkm/list',
-        // Return all available pkm
-        handler: (request: Hapi.Request): PkmInfo[] => {
+        path: '/pokemon/list',
+        // Return all available pokemon
+        handler: (request: Hapi.Request): PokemonInfo[] => {
           try {
             return data.pokemon
           } catch (error) {
@@ -22,7 +23,7 @@ const pkmPlugin: Hapi.Plugin<undefined> = {
           }
         },
         options: {
-          description: 'GET /pkm',
+          description: 'GET /pokemon',
           notes: 'Get all pokemon',
           response: { schema: Joi.array().items(pokemonSchema) },
           tags: ['api'],
@@ -30,9 +31,9 @@ const pkmPlugin: Hapi.Plugin<undefined> = {
       },
       {
         method: 'GET',
-        path: '/pkm/{id}',
-        // Return a specific pkm, by id
-        handler: (request: Hapi.Request): PkmInfo => {
+        path: '/pokemon/{id}',
+        // Return a specific pokemon, by id
+        handler: (request: Hapi.Request): PokemonInfo => {
           try {
             const pokemon = data.pokemon.find((pkm) => pkm.id === request.params.id)
             if (!pokemon) {
@@ -45,7 +46,7 @@ const pkmPlugin: Hapi.Plugin<undefined> = {
           }
         },
         options: {
-          description: 'GET /pkm/{id}',
+          description: 'GET /pokemon/{id}',
           notes: 'Get a single pokemon by its id',
           tags: ['api'],
           response: {
@@ -63,36 +64,37 @@ const pkmPlugin: Hapi.Plugin<undefined> = {
       },
     ])
 
-    // Separate route due to issues with request typing
+    // Separate route due to issues with request (payload) typing
     server.route([
       {
         method: 'POST',
-        path: '/pkm/simulate',
+        path: '/pokemon/simulate',
         handler: (
           request: Hapi.Request<{
-            Payload: { team1: { name: string; pkms: number[] }; team2: { name: string; pkms: number[] } }
+            Payload: { team1: { name: string; pokemon: number[] }; team2: { name: string; pokemon: number[] } }
           }>,
-        ): string[] => {
+        ): string => {
           try {
             const {
               payload: { team1, team2 },
             } = request
 
-            // Fill pkm data from id lists
-            const t1 = { name: team1.name, pkms: team1.pkms.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
-            const t2 = { name: team2.name, pkms: team2.pkms.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
+            // Fill pokemon data from id lists
+            const t1 = { name: team1.name, pokemon: team1.pokemon.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
+            const t2 = { name: team2.name, pokemon: team2.pokemon.map((id) => ({ ...data.pokemon[id - 1], hp: 100 })) }
 
-            return generateBattleLogs(simulateBattle(t1, t2))
+            const logs = generateBattleLogs(simulateBattle(t1, t2))
+            return logs.join('\n')
           } catch (error) {
             request.log('error', error as Error)
             throw badImplementation('Simulation failure')
           }
         },
         options: {
-          description: 'POST /pkm/simulate',
+          description: 'POST /pokemon/simulate',
           notes: 'Simulate a battle between two teams, returning the logs of the battle',
           tags: ['api'],
-          response: { schema: Joi.array().items(Joi.string()) },
+          response: { schema: Joi.string() },
           validate: {
             payload: Joi.object({
               team1: teamSchema,
@@ -108,15 +110,19 @@ const pkmPlugin: Hapi.Plugin<undefined> = {
   },
 }
 
-export default pkmPlugin
+export default pokemonPlugin
+
+// Validation schemas for the API
 
 const idSchema = Joi.number().required().min(1).max(data.pokemon.length)
+
 const teamSchema = Joi.object({
   name: Joi.string().required(),
-  pkms: Joi.array().items(idSchema).required(),
+  pokemon: Joi.array().items(idSchema).required(),
 })
 
 const typeSchema = Joi.string().valid(...typings)
+
 const pokemonSchema = Joi.object({
   id: Joi.number().integer().required(),
   num: Joi.string().required(),

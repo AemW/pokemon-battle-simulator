@@ -3,7 +3,7 @@ import Inert from '@hapi/inert'
 import Vision from '@hapi/vision'
 import HapiPino from 'hapi-pino'
 import HapiSwagger from 'hapi-swagger'
-import pkmPlugin from './plugins/pokemon'
+import pokemonPlugin from './plugins/pokemon'
 
 const main = async () => {
   const server: Hapi.Server = Hapi.server({
@@ -35,7 +35,7 @@ const main = async () => {
     },
 
     // Own plugins
-    { plugin: pkmPlugin },
+    { plugin: pokemonPlugin },
   ])
   await server.initialize()
   await server.start()

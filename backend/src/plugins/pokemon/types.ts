@@ -1,4 +1,4 @@
-export type Team = { name: string; pkms: Pkm[] }
+export type Team = { name: string; pokemon: Pokemon[] }
 export const typings = [
   'Grass',
   'Poison',
@@ -20,9 +20,9 @@ export const typings = [
   'Dragon',
 ] as const
 export type Typings = (typeof typings)[number]
-// TODO Type Pkm is meant to hold additional stats, such as health, level, etc.
-export type Pkm = PkmInfo & { hp: number }
-export type PkmInfo = { id: number; name: string; type: string[]; height: string; weight: string } & Partial<{
+// TODO Type Pokemon is meant to hold additional stats, such as health, level, etc.
+export type Pokemon = PokemonInfo & { hp: number }
+export type PokemonInfo = { id: number; name: string; type: string[]; height: string; weight: string } & Partial<{
   num: string
   img: string
   candy: string
@@ -44,35 +44,30 @@ export type PkmInfo = { id: number; name: string; type: string[]; height: string
 }>
 export type BattleEvent =
   | {
-      pkm: Pkm
+      pokemon: Pokemon
       value: number
       event: EVENT.Damage
     }
   | {
-      pkm: Pkm
+      pokemon: Pokemon
       event: EVENT.Attack
     }
   | {
       event: EVENT.Miss
     }
   | {
-      pkm: Pkm
+      pokemon: Pokemon
       event: EVENT.Faint
     }
   | {
-      event: EVENT.Turn
-    }
-  | {
       event: EVENT.Start
-    }
-  | {
-      event: EVENT.Turn
-      pkm: Pkm
+      team1: Team
+      team2: Team
     }
   | {
       event: EVENT.Choose
-      pkm: Pkm
-      team: string
+      pokemon: Pokemon
+      team: Team
     }
   | {
       event: EVENT.Victory
@@ -82,7 +77,6 @@ export enum EVENT {
   Attack,
   Damage,
   Faint,
-  Turn,
   Choose,
   Start,
   Victory,
