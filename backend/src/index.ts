@@ -1,9 +1,9 @@
 import Hapi from '@hapi/hapi'
 import Inert from '@hapi/inert'
 import Vision from '@hapi/vision'
-import hp from 'hapi-pino'
-import hapiswagger from 'hapi-swagger'
-import pkmPlugin from './plugins/pkm'
+import HapiPino from 'hapi-pino'
+import HapiSwagger from 'hapi-swagger'
+import pkmPlugin from './plugins/pokemon'
 
 const main = async () => {
   const server: Hapi.Server = Hapi.server({
@@ -15,7 +15,7 @@ const main = async () => {
   await server.register([
     // Logging
     {
-      plugin: hp,
+      plugin: HapiPino,
       options: {
         // Redact Authorization headers, see https://getpino.io/#/docs/redaction
         redact: ['req.headers.authorization'],
@@ -26,7 +26,7 @@ const main = async () => {
     Inert,
     Vision,
     {
-      plugin: hapiswagger,
+      plugin: HapiSwagger,
       options: {
         info: {
           title: 'API Documentation',
