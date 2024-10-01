@@ -4,7 +4,7 @@
     "noEmit": true,
   },
   "include": [
-    ".eslintrc.js",
+    "**/.eslintrc.js",
     "prettier.config.js"
   ]
 }

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Added AI <small>_generated_</small> react application
+- Enable CI checks for repo using github actions
 
 ### Changed
 
