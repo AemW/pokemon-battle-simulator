@@ -59,8 +59,8 @@ const simulateAction = (pokemon1: Pokemon, pokemon2: Pokemon): BattleEvent[] => 
   const hit = Math.random() > evadeChance
 
   if (hit) {
-    const damage = calculateDamage(pokemon1, pokemon2)
-    events.push({ event: EVENT.Damage, pokemon: pokemon2, value: damage })
+    const { damage, multiplier } = calculateDamage(pokemon1, pokemon2)
+    events.push({ event: EVENT.Damage, pokemon: pokemon2, value: damage, multiplier })
   } else {
     events.push({ event: EVENT.Miss })
   }
@@ -69,7 +69,13 @@ const simulateAction = (pokemon1: Pokemon, pokemon2: Pokemon): BattleEvent[] => 
 }
 
 // Attack damage calculation function
-const calculateDamage = (attacker: Pokemon, defender: Pokemon) => {
+const calculateDamage = (
+  attacker: Pokemon,
+  defender: Pokemon,
+): {
+  damage: number
+  multiplier: number
+} => {
   const baseDamage = 25
 
   const attackerWeight = parseFloat(attacker.weight)
@@ -93,11 +99,11 @@ const calculateDamage = (attacker: Pokemon, defender: Pokemon) => {
     Math.sqrt(attackerHeight / defenderHeight) *
     typeMultiplier
 
-  return Math.floor(damage)
+  return { damage: Math.floor(damage), multiplier: typeMultiplier }
 }
 
 // Evade calculation function
-const calculateEvadeChance = (pokemon: Pokemon) => {
+const calculateEvadeChance = (pokemon: Pokemon): number => {
   const avgHeight = 1.0 // avg height of all pokémon in meters
   const avgWeight = 45.0 // avg weight of all pokémon in kilograms
   const maxEvadeChance = 0.15 // 15% max evade chance
@@ -134,9 +140,12 @@ export const generateBattleLogs = (result: BattleEvent[]): string[] => {
       case EVENT.Miss:
         return `The attack missed!`
 
-      case EVENT.Damage:
-        return `${event.pokemon.name} took ${event.value} damage`
-
+      case EVENT.Damage: {
+        const superEffective = event.multiplier > 1 ? `supereffective (${event.multiplier}) ` : ''
+        const notVeryEffective = event.multiplier < 1 ? `not very effective (${event.multiplier}) ` : ''
+        const modifier = superEffective + notVeryEffective
+        return `${event.pokemon.name} took ${event.value} ${modifier}damage`
+      }
       case EVENT.Faint:
         return ['', `${event.pokemon.name} fainted`]
 

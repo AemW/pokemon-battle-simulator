@@ -7,7 +7,7 @@ import pokemonPlugin from './plugins/pokemon'
 
 const main = async () => {
   const server: Hapi.Server = Hapi.server({
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 4000,
     host: process.env.HOST || '0.0.0.0',
   })
 
@@ -46,6 +46,7 @@ process.on('unhandledRejection', (err) => {
   process.exit(1)
 })
 
+// Initialize and start the server
 main().catch((err) => {
   console.log(err)
 })

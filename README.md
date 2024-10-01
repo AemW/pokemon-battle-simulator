@@ -4,7 +4,7 @@ A simple server with an API for simulating Pokémon battles. The API contains th
 
 ## Requirements
 
-- Node.js (v22.9.0) runtime installed (including npm)
+- Node.js (>= v20) runtime installed (including npm). Node.js can be installed from the [Node.js website](https://nodejs.org/en).
 
 ## Setup
 
@@ -22,7 +22,7 @@ This will install all required dependencies.
 npm run start
 ```
 
-By default, the server will run on `localhost:3000`. You can configure the server using environment variables if needed.
+By default, the server will run on `localhost:4000`. You can configure the server using environment variables if needed.
 
 ## Using the API
 
@@ -32,7 +32,7 @@ _note_: Following command is taken from swagger, and not tested locally, as I'm 
 
 ```sh
 curl -X 'POST' \
-  'http://localhost:3000/pokemon/simulate' \
+  'http://localhost:4000/pokemon/simulate' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -60,18 +60,29 @@ The server configuration can be adjusted using the following environment variabl
 
 ## Swagger Documentation
 
-The API is documented using Swagger. Once the server is running, you can access the documentation at `HOST:PORT/documentation` (default: `localhost:3000/documentation`).
+The API is documented using Swagger. Once the server is running, you can access the documentation at `HOST:PORT/documentation` (default: `localhost:4000/documentation`).
 
 This allows you to test the server’s APIs interactively.
 
+## Repo structure
+
+The top level contains mostly config and dependencies for eslint. The reason I've installed the linter here is that I want it to be aligned for any number of sub-projects (backend, frontend, and more).
+The backend folder contains the actual server, with the APIs. I tried a modular structure using Hapi plugins, bundling logic, routes, types, etc., for the feature in a single location. Only the test file
+has been placed in a separate folder, in `backend/src/tests`.
+
+The entrypoint for the server is the file `backend/src/index.ts`, which registers all plugins and starts the server. The pokémon plugin is imported from `backend/src/plugins/pokemon`. The `index.ts` file
+contains the plugin, route definitions, route handlers, and validation schemas. `simulateBattle.ts` and `typeEffectivness.ts` holds the main logic for the plugin, and all types are located in `types.ts`.
+
 ## Limitations, decisions, and further improvements
 
-Due to time and hardware constraints, I was unable to test the Docker setup. The included Dockerfile is untested, and I could not add a Docker Compose file with Redis/MongoDB as a database, which I had planned to include.
+Due to time and hardware constraints, I was unable to test a Docker setup. The included Dockerfile is untested, and I could not add a Docker Compose file with Redis/MongoDB as a database, which I had planned to include.
 
 I decided to test Hapi for this project, instead of Express, since it comes with quite a few nice-to-haves. Since this was the first time I used it there might be a few framework conventions I've missed.
 
 I would also have liked to make a simple react-based frontend, where a user could select pokémon for both teams using a searchable dropdown. Then the results of the simulation could have been simply displayed in a textarea.
 
-The tests could also be expanded upon, since they are somewhat limited right now.
+The tests could be expanded upon, since they are somewhat limited right now.
 
 The battle logic is another area where you could keep on improving endlessly, almost ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more.
+
+Another idea I had was to create a github actions workflow for running the tests and linter, and gate PRs if the workflow failed.

@@ -55,7 +55,8 @@ const pokemonPlugin: Hapi.Plugin<undefined> = {
         handler: simulationRouteHandler,
         options: {
           description: 'POST /pokemon/simulate',
-          notes: 'Simulate a battle between two teams, returning the logs of the battle',
+          notes:
+            'Simulate a battle between two teams, returning the logs of the battle. Pokemon are chosen by their id.',
           tags: ['api'],
           response: { schema: Joi.string() },
           validate: {
@@ -76,7 +77,7 @@ const pokemonPlugin: Hapi.Plugin<undefined> = {
 export default pokemonPlugin
 
 // Router handlers
-// Retrive all pokemon
+// Retrieve all pokemon
 const getAllRouteHandler = (request: Hapi.Request): PokemonInfo[] => {
   try {
     return data.pokemon

@@ -1,4 +1,5 @@
 export type Team = { name: string; pokemon: Pokemon[] }
+
 export const typings = [
   'Grass',
   'Poison',
@@ -19,9 +20,12 @@ export const typings = [
   'Steel',
   'Dragon',
 ] as const
+
 export type Typings = (typeof typings)[number]
+
 // TODO Type Pokemon is meant to hold additional stats, such as health, level, etc.
 export type Pokemon = PokemonInfo & { hp: number }
+
 export type PokemonInfo = { id: number; name: string; type: string[]; height: string; weight: string } & Partial<{
   num: string
   img: string
@@ -42,10 +46,12 @@ export type PokemonInfo = { id: number; name: string; type: string[]; height: st
     name: string
   }[]
 }>
+
 export type BattleEvent =
   | {
       pokemon: Pokemon
       value: number
+      multiplier: number
       event: EVENT.Damage
     }
   | {
@@ -73,6 +79,7 @@ export type BattleEvent =
       event: EVENT.Victory
       team: Team
     }
+
 export enum EVENT {
   Attack,
   Damage,
