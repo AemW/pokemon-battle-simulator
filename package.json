@@ -4,7 +4,9 @@
   "scripts": {
     "test": "cd backend && npm run test",
     "postinstall": "concurrently \"cd backend && npm install\" \"cd pokemon-team-builder && npm install",
-    "start": "concurrently \"cd backend && npm run start\" \"cd pokemon-team-builder && npm run start\""
+    "start": "concurrently \"cd backend && npm run start\" \"cd pokemon-team-builder && npm run start\"",
+    "build": "cd backend && npm run build",
+    "lint": "eslint \"**/*.{js,ts}\" --quiet"
   },
   "author": "Andreas Wahlström",
   "license": "ISC",
