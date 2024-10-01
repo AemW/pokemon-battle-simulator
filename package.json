@@ -1,10 +1,12 @@
 {
   "name": "pokemon-battle-sim",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "test": "cd backend && npm run test",
     "postinstall": "cd backend && npm install",
-    "start": "cd backend && npm run start"
+    "start": "cd backend && npm run start",
+    "build": "cd backend && npm run build",
+    "lint": "eslint \"**/*.{js,ts}\" --quiet"
   },
   "author": "Andreas Wahlström",
   "license": "ISC",
