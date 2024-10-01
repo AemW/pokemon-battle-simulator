@@ -85,5 +85,3 @@ The tests could be expanded upon, since they are somewhat limited right now.
 
 The battle logic is another area where you could keep on improving endlessly, almost ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more. A better solution for
 the battle event handling might be to use an EventEmitter. This would most likely require less passing around of data.
-
-Another idea I had was to create a github actions workflow for running the tests and linter, and gate PRs if the workflow failed.
