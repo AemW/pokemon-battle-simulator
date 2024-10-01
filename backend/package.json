@@ -25,5 +25,8 @@
     "hapi-pino": "^12.1.0",
     "hapi-swagger": "^17.3.0",
     "joi": "^17.13.3"
+  },
+  "overrides": {
+    "glob": "10.4.2"
   }
 }

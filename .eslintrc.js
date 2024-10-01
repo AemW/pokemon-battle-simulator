@@ -13,7 +13,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     requireConfigFile: false,
-    project: ['./tsconfig.eslint.json', './backend/tsconfig.json'],
+    project: ['./tsconfig.eslint.json', './backend/tsconfig.json', './pokemon-team-builder/tsconfig.json'],
   },
   rules: {
     // Ensures no eslint-disables are used unnecessarily:
