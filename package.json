@@ -27,5 +27,8 @@
   },
   "engines": {
     "node": ">= v20"
+  },
+  "overrides": {
+    "rimraf": "^4.4.1"
   }
 }
