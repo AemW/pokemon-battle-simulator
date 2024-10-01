@@ -66,9 +66,9 @@ This allows you to test the server’s APIs interactively.
 
 ## Repo structure
 
-The top level contains mostly config and dependencies for eslint. The reason I've installed the linter here is that I want it to be aligned for any number of sub-projects (backend, frontend, and more).
+The top level contains mostly config, and dependencies for eslint. The reason I've installed the linter here is that I want it to be aligned for any number of sub-projects (backend, frontend, and more).
 The backend folder contains the actual server, with the APIs. I tried a modular structure using Hapi plugins, bundling logic, routes, types, etc., for the feature in a single location. Only the test file
-has been placed in a separate folder, in `backend/src/tests`.
+has been placed in a separate folder, in `backend/tests`.
 
 The entrypoint for the server is the file `backend/src/index.ts`, which registers all plugins and starts the server. The pokémon plugin is imported from `backend/src/plugins/pokemon`. The `index.ts` file
 contains the plugin, route definitions, route handlers, and validation schemas. `simulateBattle.ts` and `typeEffectivness.ts` holds the main logic for the plugin, and all types are located in `types.ts`.
@@ -83,6 +83,7 @@ I would also have liked to make a simple react-based frontend, where a user coul
 
 The tests could be expanded upon, since they are somewhat limited right now.
 
-The battle logic is another area where you could keep on improving endlessly, almost ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more.
+The battle logic is another area where you could keep on improving endlessly, almost ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more. A better solution for
+the battle event handling might be to use an EventEmitter. This would most likely require less passing around of data.
 
 Another idea I had was to create a github actions workflow for running the tests and linter, and gate PRs if the workflow failed.
