@@ -108,6 +108,7 @@ describe('generateBattleLogs', () => {
         height: '0.61 m',
         weight: '8.5 kg',
       },
+      multiplier: 1,
       value: 100,
     },
     {
