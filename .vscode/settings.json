@@ -10,7 +10,13 @@
   "[javascript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
+  "[javascripteact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
 }

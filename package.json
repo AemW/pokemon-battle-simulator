@@ -1,10 +1,10 @@
 {
   "name": "pokemon-battle-sim",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "test": "cd backend && npm run test",
-    "postinstall": "cd backend && npm install",
-    "start": "cd backend && npm run start"
+    "postinstall": "concurrently \"cd backend && npm install\" \"cd pokemon-team-builder && npm install",
+    "start": "concurrently \"cd backend && npm run start\" \"cd pokemon-team-builder && npm run start\""
   },
   "author": "Andreas Wahlström",
   "license": "ISC",
@@ -12,6 +12,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
+    "concurrently": "^9.0.1",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
