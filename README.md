@@ -22,11 +22,11 @@ This will install all required dependencies.
 npm run start
 ```
 
-By default, the app will run on `localhost:3000`. You can configure the server using environment variables if needed.
+By default, the app will run on `localhost:3000`. The frontend application might take a short while to start, please be patient!
 
 ## Pokémon team builder
 
-This is the react frontend application, reachable on `localhost:3000`. It consists of two searchable dropdowns where you can select pokémon for each team. Each pokémon chosen will appear under the dropdown, as an image. After the teams are chosen, press the battle button to start the simulation. The result will appear in the textarea.
+This is the react frontend application, reachable on `localhost:3000`. It consists of two searchable dropdowns where you can select pokémon for each team. When chosen, each pokémon will appear under the dropdown, as an image. After the teams are decided, press the battle button to start the simulation. The result will appear in the textarea.
 
 ## Using the API
 
