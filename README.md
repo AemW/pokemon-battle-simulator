@@ -1,6 +1,6 @@
 # Pokémon battle simulator
 
-An application for simulating Pokémon battles. The app consists of a backend server with the simulation API and a AI generated react frontend.
+An application for simulating Pokémon battles. The app consists of a backend server with the simulation API and a AI generated [react frontend](#pokémon-team-builder).
 
 ## Requirements
 
@@ -59,7 +59,7 @@ curl -X 'POST' \
 
 Changing these are **not recommended** when using the frontend application since it will not work without the default configuration.
 
-The server configuration can be adjusted using the following environment variables:
+The backend server configuration can be adjusted using the following environment variables:
 
 - `PORT`: The port on which the server will run.
 - `HOST`: The host address for the server.
@@ -87,11 +87,9 @@ Due to time and hardware constraints, I was unable to test a Docker setup. The i
 
 I decided to test Hapi for this project, instead of Express, since it comes with quite a few nice-to-haves. Since this was the first time I used it there might be a few framework conventions I've missed.
 
-~~I would also have liked to make a simple react-based frontend, where a user could select pokémon for both teams using a searchable dropdown. Then the results of the simulation could have been simply displayed in a textarea.~~
-
 The application comes with a AI generated react application. Minimal work done to make it work.
 
 The tests could be expanded upon, since they are somewhat limited right now.
 
 The battle logic is another area where you could keep on improving endlessly, almost ad absurdum. Especially on a more strategic level, using switches, allowing for stats boosts, and more. A better solution for
-the battle event handling might be to use an EventEmitter. This would most likely require less passing around of data.
+the battle event handling might be to use an EventEmitter. This would most likely lead to passing around less data.
